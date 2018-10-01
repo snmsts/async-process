@@ -120,3 +120,10 @@ int process_alive_p(struct process *process)
   return kill(process->pid, 0) == 0;
 }
 #endif
+
+#ifdef HAVE_WINDOWS_H
+__declspec(dllexport)
+#endif
+char* process_version(void) {
+  return PACKAGE_STRING"("GIT_REVISION")";
+}

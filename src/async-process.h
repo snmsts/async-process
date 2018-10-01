@@ -4,6 +4,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
+#include "gend.h"
 
 
 #ifdef HAVE_WINDOWS_H
@@ -42,5 +43,6 @@ int process_pid(struct process *process);
 void process_send_input(struct process *process, const char *string);
 const char* process_receive_output(struct process *process);
 int process_alive_p(struct process *process);
+char* process_version(void);
 
 #endif

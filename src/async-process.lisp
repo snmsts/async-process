@@ -5,7 +5,8 @@
    :process-send-input
    :process-receive-output
    :process-alive-p
-   :create-process))
+   :create-process
+   :process-version))
 (in-package :async-process)
 
 (pushnew (asdf:system-relative-pathname :async-process "../static/")
@@ -47,6 +48,8 @@
 
 (cffi:defcfun ("process_alive_p" %process-alive-p) :boolean
   (process :pointer))
+
+(cffi:defcfun ("process_version" process-version) :string)
 
 (defun create-process (command &key nonblock (encode cffi:*default-foreign-encoding*))
   (let* ((command (uiop:ensure-list command))

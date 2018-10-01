@@ -13,6 +13,7 @@ config.guess
 config.sub
 config.h
 config.h.in
+config.h.in~
 install-sh
 missing
 compile
@@ -24,3 +25,4 @@ config.log
 libtool
 ltmain.sh
 
+src/gend.h

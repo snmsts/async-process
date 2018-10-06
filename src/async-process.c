@@ -1,6 +1,6 @@
 #include "async-process.h"
 
-#ifndef HAVE_WINDOWS_H
+#ifndef _WIN32
 
 static const char* open_pty(int *out_fd)
 {
@@ -29,7 +29,8 @@ static struct process* allocate_process(int fd, const char *pts_name, int pid)
   return process;
 }
 
-struct process* create_process(char *const command[], bool nonblock)
+ASYNCPAPI
+struct process* cl_async_process_create(char *const command[], bool nonblock)
 {
   int pty_master;
   const char *pts_name = open_pty(&pty_master);
@@ -88,7 +89,8 @@ struct process* create_process(char *const command[], bool nonblock)
   return NULL;
 }
 
-void delete_process(struct process *process)
+ASYNCPAPI
+void cl_async_process_delete(struct process *process)
 {
   kill(process->pid, 9);
   close(process->fd);
@@ -96,17 +98,20 @@ void delete_process(struct process *process)
   free(process);
 }
 
-int process_pid(struct process *process)
+ASYNCPAPI
+int cl_async_process_pid(struct process *process)
 {
   return process->pid;
 }
 
-void process_send_input(struct process *process, const char *string)
+ASYNCPAPI
+void cl_async_process_send_input(struct process *process, const char *string)
 {
   write(process->fd, string, strlen(string));
 }
 
-const char* process_receive_output(struct process *process)
+ASYNCPAPI
+const char* cl_async_process_receive_output(struct process *process)
 {
   int n = read(process->fd, process->buffer, sizeof(process->buffer)-1);
   if (n == -1)
@@ -115,15 +120,13 @@ const char* process_receive_output(struct process *process)
   return process->buffer;
 }
 
-int process_alive_p(struct process *process)
+ASYNCPAPI
+int cl_async_process_alive_p(struct process *process)
 {
   return kill(process->pid, 0) == 0;
 }
 #endif
 
-#ifdef HAVE_WINDOWS_H
-__declspec(dllexport)
-#endif
-char* process_version(void) {
+ASYNCPAPI const char* cl_async_process_version(void) {
   return PACKAGE_STRING"("GIT_REVISION")";
 }

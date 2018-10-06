@@ -29,27 +29,27 @@
   ((process :reader process-process :initarg :process)
    (encode :accessor process-encode :initarg :encode)))
 
-(cffi:defcfun ("create_process" %create-process) :pointer
+(cffi:defcfun ("cl_async_process_create" %create-process) :pointer
   (command :pointer)
   (nonblock :boolean))
 
-(cffi:defcfun ("delete_process" %delete-process) :void
+(cffi:defcfun ("cl_async_process_delete" %delete-process) :void
   (process :pointer))
 
-(cffi:defcfun ("process_pid" %process-pid) :int
+(cffi:defcfun ("cl_async_process_pid" %process-pid) :int
   (process :pointer))
 
-(cffi:defcfun ("process_send_input" %process-send-input) :void
+(cffi:defcfun ("cl_async_process_send_input" %process-send-input) :void
   (process :pointer)
   (string :string))
 
-(cffi:defcfun ("process_receive_output" %process-receive-output) :string
+(cffi:defcfun ("cl_async_process_receive_output" %process-receive-output) :string
   (process :pointer))
 
-(cffi:defcfun ("process_alive_p" %process-alive-p) :boolean
+(cffi:defcfun ("cl_async_process_alive_p" %process-alive-p) :boolean
   (process :pointer))
 
-(cffi:defcfun ("process_version" process-version) :string)
+(cffi:defcfun ("cl_async_process_version" process-version) :string)
 
 (defun create-process (command &key nonblock (encode cffi:*default-foreign-encoding*))
   (let* ((command (uiop:ensure-list command))

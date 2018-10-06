@@ -7,7 +7,7 @@
 #include "gend.h"
 
 
-#ifdef HAVE_WINDOWS_H
+#ifdef _WIN32
 # include <windows.h>
 #else
 # define _GNU_SOURCE
@@ -23,9 +23,16 @@
 #include <string.h>
 #include <stdbool.h>
 
+
+#ifdef _WIN32
+# define ASYNCPAPI __declspec(dllexport)
+#else
+# define ASYNCPAPI
+#endif
+
 struct process {
   char buffer[1024*4];
-#ifdef HAVE_WINDOWS_H
+#ifdef _WIN32
   PROCESS_INFORMATION pi;
   HANDLE hInputWrite;
   HANDLE hOutputRead;
@@ -37,12 +44,12 @@ struct process {
 #endif
 };
 
-struct process* create_process(char *const command[], bool nonblock);
-void delete_process(struct process *process);
-int process_pid(struct process *process);
-void process_send_input(struct process *process, const char *string);
-const char* process_receive_output(struct process *process);
-int process_alive_p(struct process *process);
-char* process_version(void);
+ASYNCPAPI struct process* cl_async_process_create(char *const command[], bool nonblock);
+ASYNCPAPI void cl_async_process_delete(struct process *process);
+ASYNCPAPI int cl_async_process_pid(struct process *process);
+ASYNCPAPI void cl_async_process_send_input(struct process *process, const char *string);
+ASYNCPAPI const char* cl_async_process_receive_output(struct process *process);
+ASYNCPAPI int cl_async_process_alive_p(struct process *process);
+ASYNCPAPI const char* cl_async_process_version(void);
 
 #endif

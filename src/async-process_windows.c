@@ -1,8 +1,8 @@
 #include "async-process.h"
-#ifdef HAVE_WINDOWS_H
+#ifdef _WIN32
 
-__declspec(dllexport)
-struct process* create_process(char *const command[], bool nonblock)
+ASYNCPAPI
+struct process* cl_async_process_create(char *const command[], bool nonblock)
 {
   struct process* ret=malloc(sizeof(struct process));
   HANDLE hErrorWrite = INVALID_HANDLE_VALUE;
@@ -70,8 +70,8 @@ struct process* create_process(char *const command[], bool nonblock)
   return ret;
 }
 
-__declspec(dllexport)
-void delete_process(struct process *process)
+ASYNCPAPI
+void cl_async_process_delete(struct process *process)
 {
   TerminateProcess(process->pi.hProcess,2);
   CloseHandle(process->hInputWrite);
@@ -80,21 +80,21 @@ void delete_process(struct process *process)
   free(process);
 }
 
-__declspec(dllexport)
-int process_pid(struct process *process)
+ASYNCPAPI
+int cl_async_process_pid(struct process *process)
 {
   return process->pi.dwProcessId;
 }
 
-__declspec(dllexport)
-void process_send_input(struct process *process, const char *string)
+ASYNCPAPI
+void cl_async_process_send_input(struct process *process, const char *string)
 {
   DWORD n = 0;
   WriteFile(process->hInputWrite,string,strlen(string),&n,NULL);
 }
 
-__declspec(dllexport)
-const char* process_receive_output(struct process *process)
+ASYNCPAPI
+const char* cl_async_process_receive_output(struct process *process)
 {
   DWORD n = 0;
   DWORD avail;
@@ -111,8 +111,8 @@ const char* process_receive_output(struct process *process)
   return NULL;
 }
 
-__declspec(dllexport)
-int process_alive_p(struct process *process)
+ASYNCPAPI
+int cl_async_process_alive_p(struct process *process)
 {
   DWORD dwExitCode;
   GetExitCodeProcess(process->pi.hProcess, &dwExitCode);

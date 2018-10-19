@@ -2,15 +2,17 @@ pkglib_LTLIBRARIES = libasyncprocess.la
 libasyncprocess_la_LDFLAGS = -module -avoid-version -no-undefined
 libasyncprocess_la_SOURCES = src/async-process.c src/async-process_windows.c
 
+libasync_abiversion=0
+
 src/async-process.c: src/gend.h
-copy:
-	cp -f .libs/libasyncprocess.so static/libasyncprocess-`uname -m`-`uname`.so|true
-	cp -f .libs/libasyncprocess.dylib static/libasyncprocess-`uname -m`-`uname`.dylib|true
+copy: $(pkglib_LTLIBRARIES)
+	cp -f .libs/libasyncprocess.so static/libasyncprocess-`uname -m`-`uname`-$(libasync_abiversion).so|true
+	cp -f .libs/libasyncprocess.dylib static/libasyncprocess-`uname -m`-`uname`-$(libasync_abiversion).dylib|true
 	case "$(MSYSTEM)" in \
 	  MINGW32)           \
-	    cp -f .libs/libasyncprocess.dll static/libasyncprocess-x86.dll|true;; \
+	    cp -f .libs/libasyncprocess.dll static/libasyncprocess-x86-$(libasync_abiversion).dll|true;; \
 	  *)                 \
-	    cp -f .libs/libasyncprocess.dll static/libasyncprocess-`uname -m`.dll|true;; \
+	    cp -f .libs/libasyncprocess.dll static/libasyncprocess-`uname -m`-$(libasync_abiversion).dll|true;; \
 	esac
 
 FORCE:

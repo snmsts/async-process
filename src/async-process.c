@@ -30,7 +30,7 @@ static struct process* allocate_process(int fd, const char *pts_name, int pid)
 }
 
 ASYNCPAPI
-struct process* cl_async_process_create(char *const command[], bool nonblock)
+struct process* cl_async_process_create(char *const command[], bool nonblock,unsigned int buffer_size)
 {
   int pty_master;
   const char *pts_name = open_pty(&pty_master);

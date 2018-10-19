@@ -44,7 +44,7 @@ struct process {
 #endif
 };
 
-ASYNCPAPI struct process* cl_async_process_create(char *const command[], bool nonblock);
+ASYNCPAPI struct process* cl_async_process_create(char *const command[], bool nonblock,unsigned int buffer_size);
 ASYNCPAPI void cl_async_process_delete(struct process *process);
 ASYNCPAPI int cl_async_process_pid(struct process *process);
 ASYNCPAPI void cl_async_process_send_input(struct process *process, const char *string);

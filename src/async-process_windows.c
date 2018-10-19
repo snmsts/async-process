@@ -2,7 +2,7 @@
 #ifdef _WIN32
 
 ASYNCPAPI
-struct process* cl_async_process_create(char *const command[], bool nonblock)
+struct process* cl_async_process_create(char *const command[], bool nonblock,unsigned int buffer_size)
 {
   struct process* ret=malloc(sizeof(struct process));
   HANDLE hErrorWrite = INVALID_HANDLE_VALUE;

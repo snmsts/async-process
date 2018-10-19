@@ -15,11 +15,18 @@
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun system (cmd)
-    (ignore-errors (string-right-trim '(#\Newline) (uiop:run-program cmd :output :string)))))
+    (ignore-errors (string-right-trim '(#\Newline) (uiop:run-program cmd :output :string))))
+  (defun abi-version ()
+    (with-open-file (i (asdf:system-relative-pathname :async-process "../Makefile.am"))
+      (loop :for line := (read-line i nil nil)
+            :while line
+            :for (a . b) := (uiop:split-string line :separator '(#\=))
+            :when (equal a "libasync_abiversion")
+            :return (first b)))))
 
 (cffi:define-foreign-library async-process
-  (:unix #.(format nil "libasyncprocess-~A-~A.so" (system "uname -m") (system "uname")))
-  (:windows #.(format nil "libasyncprocess-~A.dll" (if (or #+x86-64 t)
+  (:unix #.(format nil "libasyncprocess-~A-~A-~A.so" (system "uname -m") (system "uname")))
+  (:windows #.(format nil "libasyncprocess-~A-~A.dll" (if (or #+x86-64 t)
 						       "x86_64"
 						       "x86"))))
 
@@ -31,7 +38,8 @@
 
 (cffi:defcfun ("cl_async_process_create" %create-process) :pointer
   (command :pointer)
-  (nonblock :boolean))
+  (nonblock :boolean)
+  (buffer-size :unsigned-int))
 
 (cffi:defcfun ("cl_async_process_delete" %delete-process) :void
   (process :pointer))

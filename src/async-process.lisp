@@ -25,10 +25,15 @@
             :return (first b)))))
 
 (cffi:define-foreign-library async-process
-  (:unix #.(format nil "libasyncprocess-~A-~A-~A.so" (system "uname -m") (system "uname")))
-  (:windows #.(format nil "libasyncprocess-~A-~A.dll" (if (or #+x86-64 t)
-						       "x86_64"
-						       "x86"))))
+  (:unix #.(format nil "libasyncprocess-~A-~A-~A.so"
+                   (system "uname -m")
+                   (system "uname")
+                   (abi-version)))
+  (:windows #.(format nil "libasyncprocess-~A-~A.dll"
+                      (if (or #+x86-64 t)
+                          "x86_64"
+                          "x86")
+                      (abi-version))))
 
 (cffi:use-foreign-library async-process)
 
@@ -68,7 +73,7 @@
             :do (setf (cffi:mem-aref argv :string i) c))
       (setf (cffi:mem-aref argv :string length) (cffi:null-pointer))
       (make-instance 'process
-		     :process (%create-process argv nonblock)
+		     :process (%create-process argv nonblock (* 4 1024))
 		     :encode  encode))))
 
 (defun delete-process (process)

@@ -31,7 +31,8 @@
 #endif
 
 struct process {
-  char buffer[1024*4];
+  unsigned int buffer_size;
+  char *buffer;
 #ifdef _WIN32
   PROCESS_INFORMATION pi;
   HANDLE hInputWrite;

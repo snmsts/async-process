@@ -17,11 +17,13 @@ static const char* open_pty(int *out_fd)
   return name;
 }
 
-static struct process* allocate_process(int fd, const char *pts_name, int pid)
+static struct process* allocate_process(int fd, const char *pts_name, int pid,unsigned int buffer_size)
 {
   struct process *process = malloc(sizeof(struct process));
   if (process == NULL)
     return NULL;
+  process->buffer_size = buffer_size;
+  process->buffer = malloc(buffer_size);
   process->fd = fd;
   process->pty_name = malloc(strlen(pts_name) + 1);
   process->pid = pid;
@@ -83,7 +85,7 @@ struct process* cl_async_process_create(char *const command[], bool nonblock,uns
     char buf[12];
     read(pipefd[0], buf, sizeof(buf));
     close(pipefd[0]);
-    return allocate_process(pty_master, pts_name, atoi(buf));
+    return allocate_process(pty_master, pts_name, atoi(buf),buffer_size);
   }
 
   return NULL;
@@ -95,6 +97,7 @@ void cl_async_process_delete(struct process *process)
   kill(process->pid, 9);
   close(process->fd);
   free(process->pty_name);
+  free(process->buffer);
   free(process);
 }
 
@@ -113,7 +116,7 @@ void cl_async_process_send_input(struct process *process, const char *string)
 ASYNCPAPI
 const char* cl_async_process_receive_output(struct process *process)
 {
-  int n = read(process->fd, process->buffer, sizeof(process->buffer)-1);
+  int n = read(process->fd, process->buffer, process->buffer_size-1);
   if (n == -1)
     return NULL;
   process->buffer[n] = '\0';

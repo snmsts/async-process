@@ -12,6 +12,8 @@ struct process* cl_async_process_create(char *const command[], bool nonblock,uns
   HANDLE hInputRead = INVALID_HANDLE_VALUE;
 
   SECURITY_ATTRIBUTES sa;
+  ret->buffer_size = buffer_size;
+  ret->buffer = malloc(buffer_size);
   ret->nonblock=nonblock;
   sa.nLength = sizeof(SECURITY_ATTRIBUTES);
   sa.lpSecurityDescriptor = 0;
@@ -77,6 +79,7 @@ void cl_async_process_delete(struct process *process)
   CloseHandle(process->hInputWrite);
   CloseHandle(process->hOutputRead);
   CloseHandle(process->pi.hThread);
+  free(process->buffer);
   free(process);
 }
 
@@ -104,7 +107,7 @@ const char* cl_async_process_receive_output(struct process *process)
     if(!avail)
       return NULL;
   }
-  if (ReadFile(process->hOutputRead, process->buffer, sizeof(process->buffer)-1, &n, NULL)) {
+  if (ReadFile(process->hOutputRead, process->buffer, process->buffer_size-1, &n, NULL)) {
     process->buffer[n] = '\0';
     return process->buffer;
   }

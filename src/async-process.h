@@ -37,6 +37,7 @@ struct process {
 #endif
 };
 
+const char* async_process_version(void);
 struct process* create_process(char *const command[], bool nonblock, const char *path);
 void delete_process(struct process *process);
 int process_pid(struct process *process);

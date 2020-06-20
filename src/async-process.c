@@ -1,5 +1,10 @@
 #include "async-process.h"
 
+const char* async_process_version(void)
+{
+  return VERSION;
+}
+
 #ifndef HAVE_WINDOWS_H
 
 static const char* open_pty(int *out_fd)

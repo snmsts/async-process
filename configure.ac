@@ -1,4 +1,4 @@
-AC_INIT([async-process], [0.1])
+AC_INIT([async-process], [0.0.2])
 AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([foreign])

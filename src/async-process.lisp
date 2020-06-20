@@ -34,6 +34,7 @@
   ((process :reader process-process :initarg :process)
    (encode :accessor process-encode :initarg :encode)))
 
+(cffi:defcfun ("async_process_version" async-process-version) :string)
 (cffi:defcfun ("create_process" %create-process) :pointer
   (command :pointer)
   (nonblock :boolean)
